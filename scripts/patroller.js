@@ -5,7 +5,7 @@ class Patroller
       this.tokens = [];
       this.executePatrol = false;
       this.started = false;
-      this.delay = game.settings.get("theyhearmewalkin", "patrolDelay") || 2500;
+      this.delay = game.settings.get("pathpatroller", "patrolDelay") || 2500;
       this.pathCoords = [];
       this.currentPathIndex = 0;
     }
@@ -32,7 +32,7 @@ class Patroller
         this.mapTokens;
         for (let token of this.tokens)
         {
-            token.tokenDocument.setFlag("theyhearmewalkin", "pathIndex", 0);
+            token.tokenDocument.setFlag("pathpatroller", "pathIndex", 0);
         }
     }
     
@@ -63,8 +63,8 @@ class Patroller
                 {
                     //console.log(token);
                     //console.log(_patrol.pathCoords);
-                    pathName = token.tokenDocument.document.getFlag("theyhearmewalkin", "patrolPath");
-                    currentPathIndex = token.tokenDocument.document.getFlag("theyhearmewalkin", "pathIndex") ?? 0;
+                    pathName = token.tokenDocument.document.getFlag("pathpatroller", "patrolPath");
+                    currentPathIndex = token.tokenDocument.document.getFlag("pathpatroller", "pathIndex") ?? 0;
                     //console.log(currentPathIndex);
                     pathID = canvas.drawings.placeables.filter((d) => d.data.text.includes(pathName))[0].id;
                     //console.log(pathID);
@@ -94,7 +94,7 @@ class Patroller
                 {
                     currentPathIndex += 1;
                 }
-                token.tokenDocument.document.setFlag("theyhearmewalkin", "pathIndex", currentPathIndex);
+                token.tokenDocument.document.setFlag("pathpatroller", "pathIndex", currentPathIndex);
             }
           }
 
@@ -103,7 +103,7 @@ class Patroller
         console.log("Mapping tokens");
         this.pathCoords = [];
         this.tokens = [];
-        canvas.tokens.placeables.filter((t) => t.document.getFlag("theyhearmewalkin", "makePatroller")).forEach((t) => {this.tokens.push({tokenDocument: t});});
+        canvas.tokens.placeables.filter((t) => t.document.getFlag("pathpatroller", "makePatroller")).forEach((t) => {this.tokens.push({tokenDocument: t});});
         let paths = canvas.drawings.placeables.filter((d) => d.data.text.includes("Path"));
         //console.log(paths);
         if(paths[0] != undefined)

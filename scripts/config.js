@@ -1,6 +1,6 @@
 Hooks.once('init', async function() {
     console.log("Registering Custom Patroller game settings...");
-    game.settings.register("custompatroller", "patrolDelay", {  
+    game.settings.register("pathpatroller", "patrolDelay", {  
         name: "Patrol Delay",                  
         hint: "Set how slow the patrollers will walk",               
         scope: "world",                                     
@@ -13,33 +13,33 @@ Hooks.once('init', async function() {
         },
         default: 2500                                 
     });
-    libWrapper.register("custompatroller","Token.prototype.animateMovement", _patrollerAnimateMovement, "OVERRIDE")
+    libWrapper.register("pathpatroller","Token.prototype.animateMovement", _patrollerAnimateMovement, "OVERRIDE")
 });
 
 Hooks.on("renderTokenConfig", (app, html, data) => {
     if (!game.user.isGM) return;
     let toggleHTML = `<div class="form-group">
     <label>Patroller: </label>
-    <input type="checkbox" name="flags.custompatroller.makePatroller" {{checked flags.custompatroller.makePatroller}}>
+    <input type="checkbox" name="flags.pathpatroller.makePatroller" {{checked flags.pathpatroller.makePatroller}}>
     <label>Patrol Path: </label>
-    <input type="text" name="flags.custompatroller.patrolPath" {{value flags.custompatroller.patrolPath}}>
+    <input type="text" name="flags.pathpatroller.patrolPath" {{value flags.pathpatroller.patrolPath}}>
     <label>Path Index: </label>
-    <input type="number" enabled="false" name="flags.custompatroller.pathIndex" {{value flags.custompatroller.pathIndex}}>
+    <input type="number" enabled="false" name="flags.pathpatroller.pathIndex" {{value flags.pathpatroller.pathIndex}}>
   </div>
   `;
   const lockrotation = html.find("input[name='lockRotation']");
     const formGroup = lockrotation.closest(".form-group");
     formGroup.after(toggleHTML);
-    html.find("input[name ='flags.custompatroller.makePatroller']")[0].checked = app.object.getFlag("custompatroller", "makePatroller") || false;
-    html.find("input[name = 'flags.custompatroller.patrolPath']")[0].value = app.object.getFlag("custompatroller", "patrolPath") || "";
-    html.find("input[name = 'flags.custompatroller.pathIndex']")[0].value = app.object.getFlag("custompatroller", "pathIndex") || "";
+    html.find("input[name ='flags.pathpatroller.makePatroller']")[0].checked = app.object.getFlag("pathpatroller", "makePatroller") || false;
+    html.find("input[name = 'flags.pathpatroller.patrolPath']")[0].value = app.object.getFlag("pathpatroller", "patrolPath") || "";
+    html.find("input[name = 'flags.pathpatroller.pathIndex']")[0].value = app.object.getFlag("pathpatroller", "pathIndex") || "";
     html.find($('button[name="submit"]')).click(app.object, saveTokenConfigPT);
   });
 
 async function saveTokenConfigPT(event) {
     let html = this.offsetParent;
-    let makePatroller = html.querySelectorAll("input[name ='flags.custompatroller.makePatroller']")[0].checked;
-    await event.data.setFlag("custompatroller", "makePatroller", makePatroller);
+    let makePatroller = html.querySelectorAll("input[name ='flags.pathpatroller.makePatroller']")[0].checked;
+    await event.data.setFlag("pathpatroller", "makePatroller", makePatroller);
     _patrol.mapTokens();
 }
 

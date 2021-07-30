@@ -1,6 +1,6 @@
 {
-  "name": "CustomPatroller",
-  "title": "Custom Patroller",
+  "name": "pathpatroller",
+  "title": "Path Patroller",
   "description": "A patrol modification to follow drawn paths",
   "version": "This is auto replaced",
   "library": "false",

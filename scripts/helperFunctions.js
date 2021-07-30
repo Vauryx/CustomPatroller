@@ -20,7 +20,7 @@ async function _patrollerAnimateMovement(ray) {
     const s = canvas.dimensions.size;
     this._movement = ray;
     const speed = s * 10;
-    const duration = this.document.getFlag("theyhearmewalkin", "makePatroller") && !this._controlled ? game.settings.get("theyhearmewalkin", "patrolDelay") : (ray.distance * 1000) / speed;
+    const duration = this.document.getFlag("pathpatroller", "makePatroller") && !this._controlled ? game.settings.get("pathpatroller", "patrolDelay") : (ray.distance * 1000) / speed;
   
     // Define attributes
     const attributes = [
