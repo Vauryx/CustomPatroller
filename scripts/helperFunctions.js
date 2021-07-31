@@ -12,7 +12,7 @@ Hooks.on("canvasReady",()=>{
  
   _patrol.stopPatrol()
   _patrol.startPatrol()
-  console.log(_patrol);
+  //console.log(_patrol);
 })
 
 async function _patrollerAnimateMovement(ray) {
