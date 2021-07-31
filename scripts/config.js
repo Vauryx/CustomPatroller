@@ -65,16 +65,26 @@ async function saveTokenConfigPT(event) {
     let pathID = "";
     if (pathGroup[0] != undefined)
     {
-      pathID = pathGroup[0].id;
+      if (multiPath)
+      {
+        pathID = pathGroup[Math.floor(Math.random() * pathGroup.length)].id;
+      }
+      else
+      {
+        pathID = pathGroup[0].id;
+      }
+      
     }
-    
-    console.log("path id saved: " + pathID);
+    //console.log("path id saved: " + pathID);
+    let justReset = false;
     await event.data.setFlag("pathpatroller", "makePatroller", makePatroller);
     await event.data.setFlag("pathpatroller", "patrolPath", pathName);
     await event.data.setFlag("pathpatroller", "multiPath", multiPath);
     await event.data.setFlag("pathpatroller", "pathIndex", Number(patrolPathIndex));
     await event.data.setFlag("pathpatroller", "pathID", pathID);
+    await event.data.setFlag("pathpatroller", "justReset", justReset);
     _patrol.mapTokensAndPaths();
+    _patrol.resetPathIndex();
 }
 
 Hooks.on("getSceneControlButtons", (controls, b, c) => {
