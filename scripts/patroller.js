@@ -85,17 +85,7 @@ class Patroller
             {
                 name = token.tokenDocument.data.name;
                 id = token.tokenDocument.id;
-                //console.log("Patroller Log For: " + name + " - " + id +" -------------------------------");
-               // if(_patrol.justReset.includes(id))
-               // {
-                //    console.log("Just reset!");
-                //    currentPathIndex = 0;
-               // } 
-              //  else
-              //  {
-               //     console.log("Have not reset!");
-               //     currentPathIndex = Number(token.tokenDocument.document.getFlag("pathpatroller", "pathIndex")); 
-               // }
+                isMultiPath = false;
                 currentPathIndex = await Number(token.tokenDocument.document.getFlag("pathpatroller", "pathIndex")); 
                 if (token.tokenDocument._controlled) 
                 {
@@ -120,18 +110,6 @@ class Patroller
                         }
                     });
                 }
-                
-                //console.log("token: ");
-                //console.log(token);
-                //console.log("Just Reset List: ");
-                //console.log(_patrol.justReset);
-                //console.log(name + " is moving to node " + (currentPathIndex) + " of path {" + pathName + ", " + pathID + "}");
-                //console.log("patrolPath: ");
-                //console.log(patrolPath);
-                //console.log(pathName + " - " + pathID +" at node " + (currentPathIndex) + " is ");
-                //console.log(patrolPath[currentPathIndex]);
-                    //console.log(name + " is moving from {x: " + token.tokenDocument.data.x + ", y: " + token.tokenDocument.data.y + "} to {x: " 
-                    //+ (patrolPath[currentPathIndex].x) + ", y: " + (patrolPath[currentPathIndex].y) + "}");
                  updates.push({
                     _id: token.tokenDocument.document.id,
                     x: patrolPath[currentPathIndex].x,
@@ -139,82 +117,34 @@ class Patroller
                 });
                 if (currentPathIndex >= patrolPath.length-1)
                 {
-                    //console.log("Finished path! Resetting node progress --");
                     currentPathIndex = 0;
-                // console.log("adding token to justReset...");
-                // _patrol.justReset.push(id);
                     if(isMultiPath)
                     {
-                    // console.log("Multi-path flag detected --")
-                    // console.log("PatrolPathGroup: ");
-                    // console.log(patrolPathGroup);
                         let nextPatrolPathIndex = Math.floor(Math.random() * patrolPathGroup.length);
-                    // console.log("Randomly picking next pathIndex: " + nextPatrolPathIndex);
-                        
                         if(patrolPathGroup.length > 1)
                         {
-                        //   console.log("Multiple paths found --")
-                        //  console.log("pathInUse: " + pathID);
-                        //  console.log("nextPatrolPathIndex before loop: " + nextPatrolPathIndex);
                             nextPathID = patrolPathGroup[nextPatrolPathIndex].document.id;
-                        //   console.log("next path id before loop: " + nextPathID);
                             let infiniteCatch = 0;
-                            while((pathID == patrolPathGroup[nextPatrolPathIndex].id 
-                                    || _patrol.pathsInUse.includes(nextPathID)) && infiniteCatch < (patrolPathGroup.length*2))
+                            while((pathID == patrolPathGroup[nextPatrolPathIndex].id || _patrol.pathsInUse.includes(nextPathID)) && infiniteCatch < (patrolPathGroup.length*2))
                             {
-                            //  if(pathID == patrolPathGroup[nextPatrolPathIndex].id)
-                            //  {
-                            //     console.log(pathID + " is what this token is currently using! Picking new path --");
-                            // }
-                            //  else if(_patrol.pathsInUse.includes(nextPathID))
-                            //  {
-                            //       console.log(nextPathID + " is being used! Picking new path --");
-                            //      console.log("Curernt paths in use: ");
-                            //      console.log(_patrol.pathsInUse);
-                            //   }
-                                
                                 nextPatrolPathIndex = Math.floor(Math.random() * patrolPathGroup.length);
                                 nextPathID = patrolPathGroup[nextPatrolPathIndex].document.id;
-                                //console.log("new nextPatrolPathIndex: " + nextPatrolPathIndex);
-                            // console.log("new nextPathID: " + nextPathID);
                                 infiniteCatch +=1;
                             }
-                        // console.log("Picked new path --");
                             nextPathID = patrolPathGroup[nextPatrolPathIndex].document.id;
-                            //console.log("next path id after loop: " + nextPathID);
-                        // console.log("nextPatrolPathIndex after loop: " + nextPatrolPathIndex);
                         }
-
-                        //console.log("Changing " + _patrol.pathsInUse[_patrol.pathsInUse.findIndex((pathID) => {return pathID == id})] + " - to - " + nextPathID + " in pathsInUse array");
-                    // console.log("Current paths in use: ");
-                    // console.log(_patrol.pathsInUse);
-                    // console.log("Freeing up path for use by other patrollers...");
                         let pathIndexToRemove = _patrol.pathsInUse.indexOf(pathID);
-                    //  console.log("Removing pathsInUse Index: " + pathIndexToRemove); 
                         _patrol.pathsInUse.splice(pathIndexToRemove, 1);
-                    //  console.log("Updated pathsInUse: ");
-                    //   console.log(_patrol.pathsInUse);
-                    //   console.log("locking new path from use...");
                         _patrol.pathsInUse.push(patrolPathGroup[nextPatrolPathIndex].document.id);
-                    //   console.log("New pathsInUse: ");
-                    //   console.log(_patrol.pathsInUse);
-
-                    //    console.log("Settign pathID flag to: " + patrolPathGroup[nextPatrolPathIndex].document.id);
-                    await  token.tokenDocument.document.setFlag("pathpatroller", "pathID", patrolPathGroup[nextPatrolPathIndex].document.id);
+                        await  token.tokenDocument.document.setFlag("pathpatroller", "pathID", patrolPathGroup[nextPatrolPathIndex].document.id);
                     }
                     
                 }
                 else
                 {
                     currentPathIndex += 1;
-                    //console.log("removing token from justReset...");
-                // _patrol.justReset.splice( _patrol.justReset.indexOf(id));
                 }
-                
-                //console.log("Updates pushed: ");
-                //console.log(updatesPushed);
-               // console.log("Updating pathIndex Flag: " + currentPathIndex);
-               await token.tokenDocument.document.setFlag("pathpatroller", "pathIndex", Number(currentPathIndex));
+                await token.tokenDocument.document.setFlag("pathpatroller", "pathIndex", Number(currentPathIndex));
                 
             }
             
