@@ -38,8 +38,10 @@ class Patroller
         {
             if (this.pathCoords != undefined)
             {
-               let  pathName = token.tokenDocument.document.getFlag("pathpatroller", "patrolPath");
-                let pathID = canvas.drawings.placeables.filter((d) => d.data.text.includes(pathName))[0].id;
+                let pathName = token.tokenDocument.document.getFlag("pathpatroller", "patrolPath");
+                let patrolPathGroup = canvas.drawings.placeables.filter((d) => d.data.text.includes(pathName));
+                let patrolPathIndex = Math.floor(Math.random() * patrolPathGroup.length);
+                let pathID = patrolPathGroup[patrolPathIndex].document.id;
                 patrolPath = this.pathCoords.filter((coordSet) => 
                 {
                     if(coordSet.patrolPath.includes(pathID))
@@ -47,15 +49,17 @@ class Patroller
                         return coordSet;
                     }
                 });
+                if(resetToRandomNode)
+                {
+                    await token.tokenDocument.document.setFlag("pathpatroller", "pathID", pathID);
+                    await token.tokenDocument.document.setFlag("pathpatroller", "pathIndex", Number(Math.floor(Math.random() * patrolPath.length)));
+                }
+                else
+                {
+                    await token.tokenDocument.document.setFlag("pathpatroller", "pathIndex", 0);
+                }       
             }
-            if(resetToRandomNode)
-            {
-                await token.tokenDocument.document.setFlag("pathpatroller", "pathIndex", Number(Math.floor(Math.random() * patrolPath.length)));
-            }
-            else
-            {
-                await token.tokenDocument.document.setFlag("pathpatroller", "pathIndex", 0);
-            }           
+                
         }
         
     }
@@ -110,11 +114,15 @@ class Patroller
                         }
                     });
                 }
-                 updates.push({
-                    _id: token.tokenDocument.document.id,
-                    x: patrolPath[currentPathIndex].x,
-                    y: patrolPath[currentPathIndex].y,
-                });
+                if(patrolPath[currentPathIndex] != undefined)
+                {
+                    updates.push({
+                        _id: token.tokenDocument.document.id,
+                        x: patrolPath[currentPathIndex].x,
+                        y: patrolPath[currentPathIndex].y,
+                    });
+                }
+                 
                 if (currentPathIndex >= patrolPath.length-1)
                 {
                     currentPathIndex = 0;

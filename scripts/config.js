@@ -82,7 +82,6 @@ async function saveTokenConfigPT(event) {
     await event.data.setFlag("pathpatroller", "multiPath", multiPath);
     await event.data.setFlag("pathpatroller", "pathIndex", Number(patrolPathIndex));
     await event.data.setFlag("pathpatroller", "pathID", pathID);
-    await event.data.setFlag("pathpatroller", "justReset", justReset);
     _patrol.mapTokensAndPaths();
     _patrol.resetPathIndex();
 }
